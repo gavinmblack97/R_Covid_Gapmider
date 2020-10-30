@@ -1,0 +1,52 @@
+library(dplyr)
+library(reader)
+library(ggplot2)
+
+#READ CSV FILE
+CD <- read.csv('COVID_DATA.csv')
+
+
+#Filter COVID Data to include only US, also removed dupicated rows
+US <- CD %>%
+  filter(Country == 'United States') %>%
+  unique()
+
+#Filter Covid Data to include only Italy, also removed duplicated rows
+
+Italy <- CD %>%
+  filter(Country == 'Italy') %>%
+  unique()
+
+#New Data Frame that contains only year and new daily deaths
+US_Daily_deaths <- US %>%
+  select('Year', 'Daily.new.confirmed.deaths.due.to.COVID.19')
+
+
+#Plot of year vs new daily cases in US
+US_daily_cases_plot <- ggplot(US, aes(Year,Daily.new.confirmed.cases.of.COVID.19)) +
+  xlab("Time Since First Case (Days)") +
+  ylab("Daily Confirmed Cases of Covid-19") +
+  ggtitle('Daily New Cases of Covid-19 vs Time Since First Case') +
+  geom_point()
+  xlim(0,178)
+
+
+#Prints plot of year vs new daily cases
+US_daily_cases_plot
+  
+#Plot of year vs new covid deaths
+US_daily_deaths_plot <- ggplot(US, aes(Year,Daily.new.confirmed.deaths.due.to.COVID.19)) +
+  geom_point(color = 'Red') 
+
+#Prints plot
+US_daily_deaths_plot
+
+#Comparing new cases in various countries 
+
+New_Case_Comparison <- ggplot() +
+  geom_point(data = US, aes(Year,Daily.new.confirmed.cases.of.COVID.19.per.million.people), color = 'red') +
+  geom_point(data = Italy, aes(Year,Daily.new.confirmed.cases.of.COVID.19.per.million.people), color = 'blue') +
+  ylab('Daily New Covid Cases per 1 Million Population') +
+  xlab('Time (Days)')
+
+New_Case_Comparison
