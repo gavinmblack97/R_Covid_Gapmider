@@ -1,0 +1,44 @@
+library(reader)
+library(dplyr)
+library(ggplot2)
+
+install.packages("gapminder")
+
+library(gapminder)
+
+data("gapminder")
+#Compare South Africa and Ireland Life Expectancy
+X <- gapminder %>%
+  select("country","lifeExp") %>%
+  filter(country == "South Africa" |
+           country == "Ireland") %>%
+  group_by(country) %>%
+  summarise(Average_Life =  mean(lifeExp))
+
+X
+
+#Making new DF wth only Ireland and South Africa
+df1 <- gapminder %>%
+  select("country", "lifeExp") %>%
+  filter(country == "South Africa" | country == "Ireland")
+
+#T Test to compare south africa and ireland lifeExp
+t.test(data = df1, lifeExp ~ country)
+
+#Making nice plots 
+plot <- gapminder %>%
+  filter(gdpPercap < 50000) %>%
+  ggplot(aes(x=log(gdpPercap), y=lifeExp, col=year, size=pop)) + 
+  geom_point(alpha=0.5) +
+  geom_smooth(method=lm) + #Makes the lines linear
+  facet_wrap(~continent) #seperates plot into multiple plots based on continent
+  
+plot
+
+#linear Regression
+data("gapminder")
+colnames(gapminder)
+
+Linear_model <- summary(lm(lifeExp ~ gdpPercap , data = gapminder))
+
+Linear_model
